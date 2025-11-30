@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Orim Dominic Adah <orimdominic@gmail.com>",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google/genai": "^1.30.0"
+  }
+}
