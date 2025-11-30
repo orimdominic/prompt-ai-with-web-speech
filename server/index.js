@@ -14,6 +14,15 @@ async function getRequestBody(req) {
 }
 
 const server = http.createServer(async function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    res.status = 200;
+    return res.end(); // Respond to preflight requests with 200 OK
+  }
+
   switch (req.method) {
     case "POST": {
       const body = await getRequestBody(req);
