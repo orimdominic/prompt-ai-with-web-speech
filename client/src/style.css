@@ -31,20 +31,40 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.btn_container {
+  padding: 16px 0px;
+  display: flex;
+  justify-content: center;
+}
 
 #ulist_chat {
   display: flex;
   flex-direction: column;
   width: 80%;
   margin: auto;
+  padding: 0;
 }
 
 #ulist_chat .transcript {
-  color: tomato;
+  border: 1px solid tomato;
+  background: #fce5e5af;
+  border-radius: 4px;
   align-self: flex-end;
   list-style-type: none;
-  margin: 0;
-  padding: 0;
+  margin: 8px;
+  padding: 16px;
+  max-width: 80%;
+}
+
+#ulist_chat .ai_response {
+  border: 1px solid green;
+  background: #e5fce8af;
+  border-radius: 4px;
+  align-self: flex-start;
+  list-style-type: none;
+  margin: 8px;
+  padding: 16px;
+  max-width: 80%;
 }
 
 @media (prefers-color-scheme: light) {

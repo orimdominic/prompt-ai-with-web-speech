@@ -1,16 +1,9 @@
 import "./style.css";
+import { marked } from "marked";
 
+const apiUrl = "http://localhost:8000";
 const btnRecord = document.getElementById("btn_record");
 const uListChat = document.getElementById("ulist_chat");
-
-/** @param {number} t  */
-async function sleep(t = 2000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve();
-    }, t);
-  });
-}
 
 function ensureBrowserHasSpeechAPI() {
   if (
@@ -47,6 +40,41 @@ function appendTranscriptToChatList(transcript) {
   uListChat.appendChild(li);
 }
 
+/** @param {string} aiResponse  */
+function appendAIResponseToChatList(aiResponse) {
+  const li = document.createElement("li");
+  li.innerHTML = marked.parse(aiResponse);
+  li.classList.add("ai_response");
+  uListChat.appendChild(li);
+}
+
+/** @param {string} prompt  */
+async function promptAI(prompt) {
+  try {
+    const response = await fetch(apiUrl, {
+      body: JSON.stringify({ prompt }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error(err);
+      alert("An error occurred. Try again");
+      return;
+    }
+
+    const text = await response.text();
+    return text;
+  } catch (error) {
+    logError(error);
+    alert("An error occurred. Try again");
+    return ""
+  }
+}
+
 function setUpSpeechRecognition() {
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -63,11 +91,18 @@ function setUpSpeechRecognition() {
   listener.onend = async function () {
     if (!transcript || !transcript.trim()) return;
 
-    appendTranscriptToChatList(transcript);
+    btnRecord.innerText = "Thinking...";
     btnRecord.disabled = true;
-    await sleep(2000);
-    btnRecord.disabled = false;
-    transcript = "";
+    appendTranscriptToChatList(transcript);
+    promptAI(transcript)
+      .then(function (res) {
+        appendAIResponseToChatList(res);
+      })
+      .finally(function () {
+        btnRecord.innerText = "Record prompt";
+        btnRecord.disabled = false;
+        transcript = "";
+      });
   };
 
   listener.onerror = function (err) {
